@@ -5,6 +5,14 @@ struct TimeDateZone <: AbstractTime
     in_zone::AkoTimeZone
     at_zone::FixedTimeZone
     
+    function TimeDateZone(timedate::TimeDate, in_zone::VariableTimeZone, at_zone::FixedTimeZone)
+        new(timedate, in_zone, at_zone)
+    end
+    
+    function TimeDateZone(timedate::TimeDate, in_zone::FixedTimeZone, at_zone::FixedTimeZone)
+        new(timedate, in_zone, at_zone)
+    end
+
     function TimeDateZone(timedate::TimeDate, in_zone::AkoTimeZone)
         zdt = ZonedDateTime(DateTime(timedate), in_zone)
         new(timedate, zdt.timezone, zdt.zone)
