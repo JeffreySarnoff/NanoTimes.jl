@@ -25,4 +25,8 @@ using TimeZones
 using CompoundPeriods
 
 
+include("types/TimeDate.jl")
+include("types/TimeDateZone.jl")
+
+
 end # NanoTimes
