@@ -1,15 +1,19 @@
 struct TimeDate <: TimeType
     at_time::Time
     on_date::Date
-    nanosec::Nanosecond     # Nanosecond( 1_000*microsecond(at_time) + nanosecond(at_time) )
-    datetime::DateTime      # on_date + (at_time - nanosec)
-
+ 
     function TimeDate(time::Time, date::Date)
         nanosec = Nanosecond(MICROSECONDS_PER_NANOSECOND * microsecond(time)) + nanosecond(time))
         datetime = date + (time - nanosecond)
         new( time, date, nanosec, datetime )
     end
 end
+
+@inline at_time(x::TimeDate) = x.at_time
+@inline on_date(x::TimeDate) = x.on_date
+@inline nanomicro(x::TimeDate) =
+    Nanosecond(MICROSECONDS_PER_NANOSECOND * microsecond(at_time(x)) + nanosecond(at_time(x))) 
+@inline datetime(x::TimeDate) = on_date(x) + (at_time(x) - nanomicro(x))
 
 TimeDate(x::TimeDate) = x
 
@@ -18,3 +22,6 @@ TimeDate(date::Date) = TimeDate(TIME0, date)
 TimeDate(date::Date, time::Time) = TimeDate(time, date)
 
 TimeDate(zdt::ZonedDateTime) = TimeDate( DateTime(zdt) )
+
+DateTime(x::TimeDate) = datetime(x)
+Date(x::TimeDate) = Date(datetime(x))
