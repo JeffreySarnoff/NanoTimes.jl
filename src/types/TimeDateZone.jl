@@ -1,29 +1,28 @@
-struct TimeDateZone{T} <: AbstractTime
+const AkoTimeZone = Union{VariableTimeZone, FixedTimeZone}
+
+struct TimeDateZone <: AbstractTime
     timedate::TimeDate
-    in_zone::T                # VariableTimeZone or FixedTimeZone
+    in_zone::AkoTimeZone
     at_zone::FixedTimeZone
-
-    function TimeDateZone{VariableTimeZone}(timedate::TimeDate, in_zone::VariableTimeZone)
-        at_zone = ZonedDateTime(DateTime(timedate), in_zone).zone
-        new{VariableTimeZone}(timedate, in_zone, at_zone)
+    
+    function TimeDateZone(timedate::TimeDate, in_zone::AkoTimeZone)
+        zdt = ZonedDateTime(DateTime(timedate), in_zone)
+        new(timedate, zdt.timezone, zdt.zone)
     end
-    function TimeDateZone{FixedTimeZone}(timedate::TimeDate, in_zone::FixedTimeZone)
-        at_zone = ZonedDateTime(DateTime(timedate), in_zone).zone
-        new{FixedTimeZone}(timedate, in_zone, at_zone)
-    end
-
 end
 
+TimeDateZone(time::Time, date::Date, in_zone::T) where {T<:AkoTimeZone} =
+    TimeDateZone(TimeDate(time,date), in_zone)
+TimeDateZone(datetime::DateTime, in_zone::T) where {T<:AkoTimeZone} =
+    TimeDateZone(Time(datetime), Date(datetime), in_zone)
+TimeDateZone(date::Date, in_zone::T) where {T<:AkoTimeZone} =
+    TimeDateZone(TIME0, date, in_zone)
 
-TimeDateZone(timedate::TimeDate, in_zone::T) where {T<:VariableTimeZone} =
-    TimeDateZone{VariableTimeZone}(timedate, in_zone)
-
-TimeDateZone(timedate::TimeDate, in_zone::T) where {T<:FixedTimeZone} =
-    TimeDateZone{FixedTimeZone}(timedate, in_zone)
-
-function TimeDateZone(zdt::ZonedDateTime) where {T}
-    datetime = DateTime(zdt)
-    timedate = TimeDate(datetime)
-    in_zone  = zdt.timezone
-    TimeDateZone(timedate, in_zone)
+TimeDateZone(zdt::ZonedDateTime)
+   datetime = DateTime(zdt)
+   timedate = TimeDate(datetime)
+   in_zone = zdt.timezone
+   at_zone = zdt.zone
+   TimeDateZone(timedate, in_zone, at_zone)
 end
+
