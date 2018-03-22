@@ -2,6 +2,16 @@ struct TimeDateZone{T} <: AbstractTime
     timedate::TimeDate
     in_zone::T                # VariableTimeZone or FixedTimeZone
     at_zone::FixedTimeZone
+
+    function TimeDateZone{VariableTimeZone}(timedate::TimeDate, in_zone::VariableTimeZone)
+        at_zone = ZonedDateTime(DateTime(timedate), in_zone).zone
+        new{VariableTimeZone}(timedate, in_zone, at_zone)
+    end
+    function TimeDateZone{FixedTimeZone}(timedate::TimeDate, in_zone::FixedTimeZone)
+        at_zone = ZonedDateTime(DateTime(timedate), in_zone).zone
+        new{FixedTimeZone}(timedate, in_zone, at_zone)
+    end
+
 end
 
 
@@ -18,6 +28,8 @@ function TimeDateZone(zdt::ZonedDateTime) where {T}
     TimeDateZone(timedate, in_zone)
 end
 
+TimeDateZone{VariableTimeZone}(timedate::TimeDate, in_zone::VariableTimeZone)
+    TimeDateZone{VariableTimeZone}(timedate, in_zone
 #=
 function TimeDateZone{T}(zdt::ZonedDateTime) where {T<:FixedTimeZone}
     datetime = DateTime(zdt)
