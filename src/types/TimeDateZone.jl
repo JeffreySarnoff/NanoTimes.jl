@@ -27,13 +27,3 @@ function TimeDateZone(zdt::ZonedDateTime) where {T}
     in_zone  = zdt.timezone
     TimeDateZone(timedate, in_zone)
 end
-
-TimeDateZone{VariableTimeZone}(timedate::TimeDate, in_zone::VariableTimeZone)
-    TimeDateZone{VariableTimeZone}(timedate, in_zone
-#=
-function TimeDateZone{T}(zdt::ZonedDateTime) where {T<:FixedTimeZone}
-    datetime = DateTime(zdt)
-    in_zone  = zdt.timezone
-    TimeDateZone{T}(datetime, in_zone)
-end
-=#
