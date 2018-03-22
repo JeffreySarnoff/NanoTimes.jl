@@ -1,12 +1,6 @@
 struct TimeDate <: TimeType
     at_time::Time
     on_date::Date
- 
-    function TimeDate(time::Time, date::Date)
-        nanosec = Nanosecond(MICROSECONDS_PER_NANOSECOND * microsecond(time)) + nanosecond(time))
-        datetime = date + (time - nanosecond)
-        new( time, date, nanosec, datetime )
-    end
 end
 
 @inline at_time(x::TimeDate) = x.at_time
