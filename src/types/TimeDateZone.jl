@@ -17,3 +17,15 @@ TimeDateZone{T}(timedate::TimeDate, in_zone::T) where {T<:VariableTimeZone} =
 
 TimeDateZone{T}(timedate::TimeDate, in_zone::T) where {T<:FixedTimeZone} =
     TimeDateZone{FixedTimeZone}(timedate, in_zone)
+
+function TimeDateZone{T}(zdt::ZonedTimeDate) where {T<:VariableTimeZone}
+    datetime = DateTime(zdt)
+    in_zone  = TimeZone(zdt)
+    TimeDateZone{T}(datetime, in_zone)
+end
+
+function TimeDateZone{T}(zdt::ZonedTimeDate) where {T<:FixedTimeZone}
+    datetime = DateTime(zdt)
+    in_zone  = TimeZone(zdt)
+    TimeDateZone{T}(datetime, in_zone)
+end
