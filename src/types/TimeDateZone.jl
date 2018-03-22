@@ -38,17 +38,16 @@ TimeDateZone(date::Date, in_zone::T) where {T<:AkoTimeZone} =
 function TimeDateZone(zdt::ZonedDateTime)
    datetime = DateTime(zdt)
    timedate = TimeDate(datetime)
-   in_zone = zdt.timezone
-   at_zone = zdt.zone
-   TimeDateZone(timedate, in_zone, at_zone)
+   inzone = zdt.timezone
+   atzone = zdt.zone
+   TimeDateZone(timedate, inzone, atzone)
 end
 
 function ZonedDateTime(tdz::TimeDateZone)
     timedate = tdz.timedate
     datetime = DateTime(timedate)
-    in_zone = tdz.in_zone
-    at_zone = tdz.at_zone
-    ZonedDateTime(datetime, in_zone)
+    inzone = tdz.in_zone
+    ZonedDateTime(datetime, inzone)
 end
 
 function Base.:(+)(tdz::TimeDateZone, per::Period)
@@ -57,9 +56,9 @@ function Base.:(+)(tdz::TimeDateZone, per::Period)
     zdt = zdt + per
     datetime = DateTime(zdt)
     timedate = TimeDate(datetime)
-    at_time, on_date = at_time(timedate), on_date(timedate)
-    at_time = at_time + nanosecs
-    timedate = TimeDate(at_time, on_date)
+    attime, ondate = at_time(timedate), on_date(timedate)
+    attime = attime + nanosecs
+    timedate = TimeDate(attime, ondate)
     TimeDateZone(timedate, zdt.timezone)
 end
     
