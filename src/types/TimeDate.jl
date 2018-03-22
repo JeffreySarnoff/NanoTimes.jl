@@ -19,3 +19,24 @@ TimeDate(zdt::ZonedDateTime) = TimeDate( DateTime(zdt) )
 
 DateTime(x::TimeDate) = datetime(x)
 Date(x::TimeDate) = Date(datetime(x))
+
+
+function Base.:(+)(td::TimeDate, per::Period)
+    nanosecs = nanomicro(td)
+    datetime = DateTime(td)
+    datetime = datetime + per
+    timedate = TimeDate(datetime)
+    attime, ondate = at_time(timedate), on_date(timedate)
+    attime = attime + nanosecs
+    TimeDate(attime, ondate)
+end
+
+function Base.:(-)(td::TimeDate, per::Period)
+    nanosecs = nanomicro(td)
+    datetime = DateTime(td)
+    datetime = datetime - per
+    timedate = TimeDate(datetime)
+    attime, ondate = at_time(timedate), on_date(timedate)
+    attime = attime + nanosecs
+    TimeDate(attime, ondate)
+end
