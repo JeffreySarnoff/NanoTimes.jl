@@ -34,3 +34,18 @@ function TimeDateZone(zdt::ZonedDateTime)
    TimeDateZone(timedate, in_zone, at_zone)
 end
 
+function ZonedDateTime(tdz::TimeDateZone)
+    timedate = tdz.timedate
+    datetime = DateTime(timedate)
+    in_zone = tdz.in_zone
+    at_zone = tdz.at_zone
+    ZonedDateTime(datetime, in_zone)
+end
+
+function ZonedDateTime2(tdz::TimeDateZone)
+    timedate = tdz.timedate
+    datetime = DateTime(timedate)
+    in_zone = tdz.in_zone
+    at_zone = tdz.at_zone
+    ZonedDateTime(datetime, in_zone, at_zone)
+end
