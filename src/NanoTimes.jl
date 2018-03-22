@@ -26,6 +26,7 @@ using CompoundPeriods
 
 const TIME0 = Time(0)
 
+include("support/timeconst.jl")
 include("types/TimeDate.jl")
 include("types/TimeDateZone.jl")
 
