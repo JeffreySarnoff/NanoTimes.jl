@@ -19,6 +19,15 @@ struct TimeDateZone <: AbstractTime
     end
 end
 
+@inline timedate(x::TimeDateZone) = x.timedate
+@inline at_time(x::TimeDateZone) = x.timedate.at_time
+@inline on_date(x::TimeDateZone) = x.timedate.on_date
+@inline nanomicro(x::TimeDateZone) = nanomicro(x.timedate)
+@inline datetime(x::TimeDateZone) = datetime(x.timedate)
+@inline in_zone(x::TimeDateZone) = x.in_zone
+@inline at_zone(x::TimeDateZone) = x.at_zone
+
+
 TimeDateZone(time::Time, date::Date, in_zone::T) where {T<:AkoTimeZone} =
     TimeDateZone(TimeDate(time,date), in_zone)
 TimeDateZone(datetime::DateTime, in_zone::T) where {T<:AkoTimeZone} =
@@ -42,10 +51,12 @@ function ZonedDateTime(tdz::TimeDateZone)
     ZonedDateTime(datetime, in_zone)
 end
 
-function ZonedDateTime2(tdz::TimeDateZone)
-    timedate = tdz.timedate
-    datetime = DateTime(timedate)
-    in_zone = tdz.in_zone
-    at_zone = tdz.at_zone
-    ZonedDateTime(datetime, in_zone, at_zone)
+function Base.:(+)(tdz::TimeDateZone, per::Period)
+    nanosecs = nanomicro(tdz)
+    zdt = ZonedDateTime(tdz)
+    zdt = zdt + per
+    tdz = TimeDateZone(zdt)
+    tdz = tdz + nanosecs
+    return tdz
 end
+    
