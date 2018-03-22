@@ -61,4 +61,17 @@ function Base.:(+)(tdz::TimeDateZone, per::Period)
     timedate = TimeDate(attime, ondate)
     TimeDateZone(timedate, zdt.timezone)
 end
+
+
+function Base.:(-)(tdz::TimeDateZone, per::Period)
+    nanosecs = nanomicro(tdz)
+    zdt = ZonedDateTime(tdz)
+    zdt = zdt - per
+    datetime = DateTime(zdt)
+    timedate = TimeDate(datetime)
+    attime, ondate = at_time(timedate), on_date(timedate)
+    attime = attime + nanosecs
+    timedate = TimeDate(attime, ondate)
+    TimeDateZone(timedate, zdt.timezone)
+end
     
