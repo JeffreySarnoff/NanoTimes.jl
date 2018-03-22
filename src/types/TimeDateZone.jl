@@ -18,7 +18,7 @@ TimeDateZone(datetime::DateTime, in_zone::T) where {T<:AkoTimeZone} =
 TimeDateZone(date::Date, in_zone::T) where {T<:AkoTimeZone} =
     TimeDateZone(TIME0, date, in_zone)
 
-TimeDateZone(zdt::ZonedDateTime)
+function TimeDateZone(zdt::ZonedDateTime)
    datetime = DateTime(zdt)
    timedate = TimeDate(datetime)
    in_zone = zdt.timezone
