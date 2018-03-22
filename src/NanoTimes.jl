@@ -8,7 +8,7 @@ using Dates
 import TimeZones: TimeZone, ZonedDateTime, UTCOffset
 using TimeZones
 
-using CompoundPeriod
+using CompoundPeriods
 
 
 end # NanoTimes
