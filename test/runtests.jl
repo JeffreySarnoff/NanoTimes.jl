@@ -1,4 +1,4 @@
-using Dates, TimeZones, CompoundPeriods, NanoTimes
+using Dates, CompoundPeriods, TimeZones, NanoTimes
 using Test
 
 str1 = "2011-05-08T11:15:00"
@@ -30,9 +30,11 @@ tdz2 = TimeDateZone(td1, tz"America/New_York")
 @test Minute(td1 + Minute(1)) == Minute(td1) + Minute(1)
 @test Microsecond(td3 - Microsecond(1)) == Microsecond(td3) - Microsecond(1)
 
-
 @test TimeDateZone(dtz1) == tdz1
 @test TimeDateZone(dtz2) == tdz2
+
+@test yearmonthday(td1) == yearmonthday(dt1)
+@test lastdayofmonth(td1) == lastdayofmonth(dt1)
 
 str2000ms    = "2000-01-01T00:00:00.123"
 str2000ms_ut = string(str2000ms, "+00:00")
@@ -89,8 +91,9 @@ fall = DateTime(2015, 10, 25, 0)   # a 25 hour day in warsaw
 # Ensure that arithmetic around transitions works.
 @test TimeDateZone(spring, warsaw) + Hour(1) == TimeDateZone(spring + Hour(1), warsaw)
 @test TimeDateZone(spring, warsaw) + Hour(2) == TimeDateZone(spring + Hour(3), warsaw)
-@test TimeDateZone(fall, warsaw) + Hour(2) == TimeDateZone(fall + Hour(2), warsaw, 1)
-@test TimeDateZone(fall, warsaw) + Hour(3) == TimeDateZone(fall + Hour(2), warsaw, 2)
+# ambiguous
+# @test TimeDateZone(fall, warsaw) + Hour(2) == TimeDateZone(fall + Hour(2), warsaw, 1)
+# @test TimeDateZone(fall, warsaw) + Hour(3) == TimeDateZone(fall + Hour(2), warsaw, 2)
 
 
 # CompoundPeriod canonicalization interacting with period arithmetic. Since `spring_zdt` is
@@ -115,12 +118,11 @@ tdz_explicit_day_hour = (TimeDateZone(spring, warsaw) + Day(1)) + Hour(24)
 
 zdt_implicit_hourday  = ZonedDateTime(2015, 3, 31, 0, warsaw)
 tdz_implicit_hourday = TimeDateZone(zdt_implicit_hourday)
-tdz_implicit_hour_day = TimeDateZone(spring, warsaw) + Hour(24) + Day(1)
+tdz_implicit_hour_day = TimeDateZone(spring, warsaw) + (Hour(24) + Day(1))
 @test zdt_implicit_hourday == ZonedDateTime(tdz_implicit_hourday)
-#
-#!!FIXME!! this fails -- why????                                   !!FIXME!!
-#
-#@test tdz_implicit_hourday == tdz_implicit_hour_day
+@test tdz_implicit_hourday == tdz_implicit_hour_day
+tdz_implicit_hour_day = TimeDateZone(spring, warsaw) + Hour(24) + Day(1)
+@test tdz_implicit_hourday == tdz_implicit_hour_day
 
 zdt_implicit_dayhour = ZonedDateTime(2015, 3, 31, 0, warsaw)
 tdz_implicit_dayhour  = TimeDateZone(zdt_implicit_dayhour)
