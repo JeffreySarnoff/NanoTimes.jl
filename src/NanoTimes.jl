@@ -2,8 +2,10 @@ __precompile__()
 
 module NanoTimes
 
+
 export TimeDate, TimeDateZone,
-       fastpart, slowpart
+       TimeZone, timezonename, astimezone, @tz_str,
+       at_time, on_date, in_zone, at_zone
 
 import Base: promote_type, promote_rule, convert, string, show, showcompact,
              (==), (!=), (<=), (<), (>), (>=), isless, isequal,
@@ -14,37 +16,55 @@ import Base: start, done, next, eltype, length, size
 import Base.Math: (+), (-), (*), (/),
                   fld, cld, div, rem, mod, round
 
+using Dates
+
 import Dates: Time, Date, DateTime,
               Year, Month, Day, Hour, Minute, Second,
               Millisecond, Microsecond, Nanosecond,
               year, month, day, hour, minute, second,
               millisecond, microsecond, nanosecond
 
-using Dates: AbstractTime
-using Dates
-import Dates: CompoundPeriod
+import Dates: Period, CompoundPeriod, AbstractTime
+
+import Dates: yearmonthday, yearmonth, monthday, dayofmonth,
+              dayofweek, isleapyear, daysinmonth, daysinyear,
+              dayofyear, dayname, dayabbr,
+              dayofweekofmonth, daysofweekinmonth, monthname, monthabbr,
+              quarterofyear, dayofquarter,
+              firstdayofweek, lastdayofweek,
+              firstdayofmonth, lastdayofmonth,
+              firstdayofyear, lastdayofyear,
+              firstdayofquarter, lastdayofquarter,
+              tonext, toprev
+
 
 using CompoundPeriods
-import CompoundPeriods: isolate_days, canonical
+import CompoundPeriods: canonical
 
-using TimeZones
 import TimeZones: @tz_str, ZonedDateTime, TimeZone,
     localzone, astimezone, UTCOffset, FixedTimeZone, VariableTimeZone,
     all_timezones, timezone_names
 
 import TimeZones.value # value(offset::UTCOffset) = value(offset.std + offset.dst)
 
-const AkoTimeZone = Union{VariableTimeZone, FixedTimeZone}
 
-const TIME0 = Time(0)
+const AkoTimeZone = Union{FixedTimeZone, VariableTimeZone}
 
-include("support/timeconst.jl")
-include("types/TimeDate.jl")
-include("types/TimeDateZone.jl")
-include("support/periods.jl")
-include("types/selectors.jl")
-include("types/arith.jl")
-include("types/strshow.jl")
+include("TimeDate.jl")
+include("TimeDateZone.jl")
+include("timeconsts.jl")
 
+
+Date(x::Date) = x
+Time(x::Time) = x
+DateTime(x::DateTime) = x
+ZonedDateTime(x::ZonedDateTime) = x
+
+include("periods.jl")
+include("select.jl")
+include("arith.jl")
+include("compare.jl")
+include("showstring.jl")
+include("passthru.jl")
 
 end # NanoTimes
